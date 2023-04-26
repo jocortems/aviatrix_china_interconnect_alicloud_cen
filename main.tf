@@ -353,7 +353,7 @@ resource "aviatrix_transit_external_device_conn" "china_to_global" {
 resource "alicloud_common_bandwidth_package" "alicloud_china_eip_bandwidth_plan" {
   count                  = var.alicloud_china_eip_bandwidth_plan_name == null ? 0: 1
   provider               = alicloud.china
-  bandwidth              = "1000"
+  bandwidth              = var.alicloud_china_eip_bandwidth_plan_bandwidth
   internet_charge_type   = "PayByTraffic"
   bandwidth_package_name = var.alicloud_china_eip_bandwidth_plan_name
   description            = "Bandwidth Package Associated with Aviatrix Transit EIPs in ${var.alicloud_region_china}"
@@ -363,7 +363,7 @@ resource "alicloud_common_bandwidth_package" "alicloud_china_eip_bandwidth_plan"
 resource "alicloud_common_bandwidth_package" "alicloud_global_eip_bandwidth_plan" {
   count                  = var.alicloud_global_eip_bandwidth_plan_name == null ? 0: 1
   provider               = alicloud.global
-  bandwidth              = "1000"
+  bandwidth              = var.alicloud_global_eip_bandwidth_plan_bandwidth
   internet_charge_type   = "PayByTraffic"
   bandwidth_package_name = var.alicloud_global_eip_bandwidth_plan_name
   description            = "Bandwidth Package Associated with Aviatrix Transit EIPs in ${var.alicloud_region_global}"

@@ -127,8 +127,11 @@ module "aviatrix-cen-interconnect" {
     china_gateway_bgp_asn                              = 64900                           # Required. BGP ASN associated with the Transit Gateways to be created in China Region
     global_transit_bgp_asn                             = 64910                           # Required. BGP ASN associated with the existing Transit Gateways in Global Region
     pre_shared_key                                     = "vpnKey123"                     # Required. Site-to-Cloud Pre-Shared-Key. Must be manually configured on the Transit Gateways in Global Region
+    tunnel_supernet                                    = "169.254.0.0/28"                # Optional. Default 169.254.0.0/28. Used to create 4 x /30 subnets for the Site-to-Cloud Tunnel CIDRs
     alicloud_china_eip_bandwidth_plan_name             = "china-eip-bw"                  # Optional. If specified, creates an EIP Bandwidth plan in AliCloud China region where the Transit Gateways were created
     alicloud_global_eip_bandwidth_plan_name            = "global-eip-bw"                 # Optional. If specified, creates an EIP Bandwidth plan in AliCloud Global region of existing Transit Gateways
+    alicloud_china_eip_bandwidth_plan_bandwidth        = 500                             # Optional. Needed if alicloud_china_eip_bandwidth_plan_name is defined. Defaults to 500Mbps
+    alicloud_global_eip_bandwidth_plan_bandwidth       = 500                             # Optional. Needed if alicloud_global_eip_bandwidth_plan_name is defined. Defaults to 500Mbps
 }
 
 output "Remote_BGP_AS_Number" {

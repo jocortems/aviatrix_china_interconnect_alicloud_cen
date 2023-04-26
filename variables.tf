@@ -191,6 +191,18 @@ variable "alicloud_global_eip_bandwidth_plan_name" {
   default = null
 }
 
+variable "alicloud_china_eip_bandwidth_plan_bandwidth" {
+  type = number
+  description = "Bandwidth associated to the EIP bandwidth plan in China Region in Mbps. Needed if alicloud_china_eip_bandwidth_plan_name is defined. Note this is not prepaid, it is pay-as-you-go"
+  default = 500
+}
+
+variable "alicloud_global_eip_bandwidth_plan_bandwidth" {
+  type = number
+  description = "Bandwidth associated to the EIP bandwidth plan in Global Region in Mbps. Needed if alicloud_global_eip_bandwidth_plan_name is defined. Note this is not prepaid, it is pay-as-you-go"
+  default = 500
+}
+
 variable "tunnel_supernet" {
   description = "/24 Supernet for tunnel IP addresses"
   type        = string
