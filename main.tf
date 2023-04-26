@@ -378,8 +378,24 @@ resource "alicloud_common_bandwidth_package_attachment" "avx_china_gateway" {
 }
 
 resource "alicloud_common_bandwidth_package_attachment" "avx_china_gatewayha" {
-  count                = var.ha_enabled ? var.alicloud_global_eip_bandwidth_plan_name != null ? 1 : 0 : 0
+  count                = var.ha_enabled ? var.alicloud_china_eip_bandwidth_plan_name != null ? 1 : 0 : 0
   provider             = alicloud.china
   bandwidth_package_id = alicloud_common_bandwidth_package.alicloud_china_eip_bandwidth_plan[0].id
   instance_id          = module.controller-nsg.gatewayha_eip_id
+}
+
+#8d. Associate EIP Bandwidth Plan in Global with Aviatrix Transit Gateways in Global Public IP addresses
+
+resource "alicloud_common_bandwidth_package_attachment" "avx_global_gateway" {
+  count                = var.alicloud_global_eip_bandwidth_plan_name == null ? 0: 1
+  provider             = alicloud.global
+  bandwidth_package_id = alicloud_common_bandwidth_package.alicloud_global_eip_bandwidth_plan[0].id
+  instance_id          = var.global_transit_gw_eip_id
+}
+
+resource "alicloud_common_bandwidth_package_attachment" "avx_global_gatewayha" {
+  count                = var.ha_enabled ? var.alicloud_global_eip_bandwidth_plan_name != null ? 1 : 0 : 0
+  provider             = alicloud.global
+  bandwidth_package_id = alicloud_common_bandwidth_package.alicloud_global_eip_bandwidth_plan[0].id
+  instance_id          = var.global_transit_hagw_eip_id
 }

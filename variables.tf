@@ -110,6 +110,18 @@ variable "global_transitgw_hagw_private_ip" {
   default = null
 }
 
+variable "global_transit_gw_eip_id" {
+  type = string
+  description = "EIP ID associated with Aviatrix Transit Gateway in Global Region"
+  default = null  
+}
+
+variable "global_transit_hagw_eip_id" {
+  type = string
+  description = "EIP ID associated with Aviatrix Transit HA Gateway in Global Region"
+  default = null  
+}
+
 variable "global_vpc_cidr" {
   type = string
   description = "CIDR of the Aviatrix Transit VPC in Global Region"
