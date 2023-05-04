@@ -158,14 +158,14 @@ module "interconnect_global_china" {
   gw_china_region                                       = "acs-cn-beijing (Beijing)"                # Required. Name of the China Region to deploy the Aviatrix Transit Gateways to. Must match display name in Aviatrix Controller
   china_gateway_name                                    = "china-transit-gw"                        # Optional. Name of the Transit Gateway in China. If not provided defaults to the value of china_transit_vpc_name
   china_gateway_size                                    = "ecs.g5ne.large"                          # Optional. Default ecs.g5ne.large
-  china_vpc_cidr                                        = "10.200.0.0/23"                           # Required. Must be /23
+  china_vpc_cidr                                        = "10.200.0.0/23"                           # Required. Must be /24 or shorter prefix (i.e /23) and have the last /27 subnet available for creating vSwitch to interconnect with CEN Transit Router
   china_gateway_bgp_asn                                 = 64901                                     # Required. Must be unique in the network
   enable_segmentation_china                             = true/false                                # Optional. Default false        
   global_transit_vpc_name                               = "global-transit-vpc"                      # Required
   gw_global_region                                      = "acs-ap-southeast-1 (Singapore)"          # Required. Name of the Global Region to deploy the Aviatrix Transit Gateways to. Must match display name in Aviatrix Controller
   global_gateway_name                                   = "global-transit-gw"                       # Optional. Name of the Transit Gateway in Global. If not provided defaults to the value of global_transit_vpc_name
   global_gateway_size                                   = "ecs.g5ne.large"                          # Optional. Default ecs.g5ne.large
-  global_vpc_cidr                                       = "10.210.0.0/23"                           # Required. Must be /23
+  global_vpc_cidr                                       = "10.210.0.0/23"                           # Required. Must be /24 or shorter prefix (i.e /23) and have the last /27 subnet available for creating vSwitch to interconnect with CEN Transit Router
   global_gateway_bgp_asn                                = 64902                                     # Required. Must be unique in the network
   enable_segmentation_global                            = true/false                                # Optional. Default false        
   ali_china_region                                      = "cn-beijing"                              # Required. Name of the AliCloud China region where the Gateways are deployed. Must match AliCloud Region ID

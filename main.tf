@@ -2,12 +2,13 @@
 # 1a. Create VPC in China Region
 
 resource "aviatrix_vpc" "china_vpc" {
-  provider     = aviatrix.china
-  cloud_type   = 8192
-  account_name = var.china_controller_account_name
-  region       = var.gw_china_region
-  name         = var.china_transit_vpc_name
-  cidr         = var.china_vpc_cidr
+  provider             = aviatrix.china
+  cloud_type           = 8192
+  account_name         = var.china_controller_account_name
+  region               = var.gw_china_region
+  name                 = var.china_transit_vpc_name
+  cidr                 = var.china_vpc_cidr
+  aviatrix_transit_vpc = true
 }
 
 # 1b. Create the gateways
@@ -58,12 +59,13 @@ resource "aviatrix_transit_gateway" "china" {
 # 2. Create Transit Gateway in Global Region
 # 2a. Create VPC in Global Region
 resource "aviatrix_vpc" "global_vpc" {
-  provider     = aviatrix.global
-  cloud_type   = 8192
-  account_name = var.global_controller_account_name
-  region       = var.gw_global_region
-  name         = var.global_transit_vpc_name
-  cidr         = var.global_vpc_cidr
+  provider              = aviatrix.global
+  cloud_type            = 8192
+  account_name          = var.global_controller_account_name
+  region                = var.gw_global_region
+  name                  = var.global_transit_vpc_name
+  cidr                  = var.global_vpc_cidr
+  aviatrix_transit_vpc  = true
 }
 
 # 1b. Create the gateways
