@@ -4,20 +4,18 @@
 
 ### Note:
 
-This Terraform module interconnects an existing Aviatrix Transit Network deployed in AliCloud regions outside of China with an Aviatrix Transit Network deployed in AliCloud regions in China using Aviatrix Site to Cloud IPSec VPN.
+This Terraform module deploys and interconnects two Aviatrix Transit VPCs in AliCloud using AliCloud (CEN)[https://www.alibabacloud.com/help/en/cloud-enterprise-network/latest/what-is-cloud-enterprise-network#concept-2090845]
 
 This Terraform module:
 
-- Is limited to Controllers deployed in Azure China
+- Is limited to Controllers deployed in Azure China running version 6.7 - 6.9
 - Creates one Transit VPC and Aviatrix Transit Gateways in a region in AliCloud China
-- Creates two vSwitches in the existing Transit VPC deployed in AliCloud Global region that will be used to interconnect with China, one for each CEN Transit Router Zone
-- Creates an AliCloud CEN instance and transit routers in the China and Global regions that will be interconnected
-- Attaches the existing Transit VPC deployed in AliCloud Global region and the Transit VPC in AliCloud China region to the CEN transit routers in their respective regions
+- Creates one Transit VPC and Aviatrix Transit Gateways in a region in AliCloud Global
+- Creates an AliCloud CEN instance and transit routers in the China and Global regions that will be interconnected and attached the created Transit VPCs
 - Creates the required route table artifacts to achieve communication between the Transit VPCs across the regions
-- Creates a Site-to-Cloud connection on the Aviatrix Transit Gateways deployed in China region
-- CEN Inter-region connection pricing defaults to Pay-by-data-transfer 
+- Creates Site-to-Cloud connections between the Avaitrix Transit Gateways
+- CEN Inter-region connection pricing defaults to Pay-by-data-transfer
 - Optionally, it creates a CEN Bandwidth package, or uses an existing CEN Bandwidth package if one is specified
-- Optionally, it creates an EIP Bandwidth plan in China and Global regions, and attaches the Aviatrix Transit Gateways EIPs in China region to the EIP Bandwidth plan in China region
 - Adds one or two security rules to the existing NSG associated with an Azure Controller deployed in China, depending on whether the Gateways are deployed in HA or not
 
 
@@ -30,9 +28,9 @@ This Terraform module:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 3.52 |
-| <a name="provider_alicloud"></a> [alicloud](#provider\_alicloud) | ~> 1.203.0 |
-| <a name="provider_aviatrix"></a> [aviatrix](#provider\_aviatrix) | ~> 2.24.3 |
+| <a name="provider_azurerm"></a> [azurerm](https://registry.terraform.io/providers/hashicorp/azurerm/latest) | ~> 3.52 |
+| <a name="provider_alicloud"></a> [alicloud](https://registry.terraform.io/providers/aliyun/alicloud/latest) | ~> 1.203.0 |
+| <a name="provider_aviatrix"></a> [aviatrix](https://registry.terraform.io/providers/AviatrixSystems/aviatrix/latest) | >= 2.22.0 |
 
 
 ## Available Modules
@@ -40,7 +38,7 @@ This Terraform module:
 Module  | Description |
 | ------- | ----------- |
 | [aviatrix_alicloud_china_gateway_azure_controller_nsg](https://github.com/jocortems/aviatrix_alicloud_china_gateway_azure_controller_nsg) | Automates the creation of NSG rules in the NSG attached to an Aviatrix Controller deployed in Azure China for Aviatrix Gateways deployed in AliCloud in China regions |
-| [mc-transit](https://registry.terraform.io/modules/terraform-aviatrix-modules/mc-transit/aviatrix/latest) | Aviatrix Terraform module for transit deployment in multiple clouds |
+| [alicloud-cen-deploy](https://github.com/jocortems/alicloud_cen_deploy) | Deploys an AliCloud CEN and interconnects two existing VPCs to the CEN |
 
 
 ## Procedures for Running This Module
@@ -96,75 +94,120 @@ Set environment variables ALICLOUD_ACCESS_KEY and ALICLOUD_SECRET_KEY:
 
 ```hcl
 
-module "aviatrix-cen-interconnect" {
-    source                                             = "github.com/jocortems/aviatrix_alicloud_china_global_cen_interconnect"
-    controller_alicloud_account                        = "alicloud-account"              # Required. Name of the China AliCloud account onboarded to the controller
-    aviatrix_alicloud_region                           = "acs-cn-beijing (Beijing)"      # Required. Display Name of the China AliCloud region in the Aviatrix Controller
-    china_vpc_cidr                                     = "172.18.2.0/23"                 # Required. CIDR used for the Transit VPC to be created in China Region
-    gateway_name                                       = "avx-cn-transit-gw"             # Required. Name of the Transit Gateways to be created in China Region
-    transit_vpc_name                                   = "avx-cn-transit-vpc"            # Required. Name of the Transit VPC to be created in China Region
-    alicloud_region_china                              = "cn-beijing"                    # Required. AliCloud China Region ID - https://www.alibabacloud.com/help/en/basics-for-beginners/latest/regions-and-zones
-    alicloud_region_global                             = "ap-southeast-1"                # Required. AliCloud Global Region ID - https://www.alibabacloud.com/help/en/basics-for-beginners/latest/regions-and-zones
-    controller_nsg_name                                = "controllerha-nsg"              # Required. Name of the NSG associated with the Controller
-    controller_nsg_resource_group_name                 = "avtx-controller"               # Required. Name of the resource group where the NSG associated with the controller is deployed
-    controller_nsg_rule_priority                       = 400                             # Required. This number must be unique. Before running this module verify the priority number is available in the NSG associated with the Controller
-    controller_subscription_name                       = "Windows Azure Enterprise"      # Optional. Defaults to the current subscription ID of the logged in user
-    ha_enabled                                         = true/false                      # Optiona. Defaults to true. Must match HA deployment of Transit Gateway in AliCloud Global Region
-    enable_segmentation                                = true/false                      # Optional. Defaults to false    
-    global_vpc_id                                      = "vpc-abcd1234xxxx"              # Required. VPC ID of the existing Transit VPC deployed in AliCloud Global region
-    global_transitgw_private_ip                        = "172.18.0.2"                    # Required. Private IP Address of the Primary Transit Gateway in AliCloud Global region
-    global_transitgw_hagw_private_ip                   = "172.18.0.3"                    # Required. Private IP Address of the HA Transit Gateway in AliCloud Global region
-    global_vpc_cidr                                    = "172.18.0.0/23"                 # Required. CIDR of the existing Transit VPC in AliCloud Global region
-    alicloud_cen_global_geo                            = "Asia-Pacific"                  # Required. AliCloud Region where the Global Transit VPC is Deployed. Valid values are North-America, Asia-Pacific, Europe and Australia
-    alicloud_cen_name                                  = "avx-cen"                       # Required. Name of the CEN instance to be created  
-    cen_bandwidth_type                                 = DataTransfer/BandwidthPackage   # Optional. Defaults to DataTransfer. If BandwidthPackage is selected need to specify one of cen_bandwidth_package_name or cen_bandwidth_package_id
-    cen_bandwidth_package_name                         =                                 # Optional. If specified, creates a CEN bandwidth package. Make sure you understand the limitations when creating a CEN Bandwidth Package
-    cen_bandwidth_package_bandwdith                    = 0                               # Optional. Only needed if cen_bandwidth_package_name is specified
-    cen_bandwidth_limit =                                                                # Optional. Only needed if using a CEN bandwidth package (cen_bandwidth_package_name or cen_bandwidth_package_id are defined)
-    cen_bandwidth_package_period                       = 1                               # Optional. Only needed if cen_bandwidth_package_name is specified. Prepaid purchase period in months (1,2,3,6,12)
-    cen_bandwidth_package_id                           =                                 # Optional. Only needed if an existing CEN bandwidth package will be used
-    cen_transit_router_peer_attachment_bandwidth_limit = 2                               # Required. Defaults to 2Mbps. If using a CEN bandwidth package it must be less than cen_bandwidth_limit
-    china_gateway_bgp_asn                              = 64900                           # Required. BGP ASN associated with the Transit Gateways to be created in China Region
-    global_transit_bgp_asn                             = 64910                           # Required. BGP ASN associated with the existing Transit Gateways in Global Region
-    pre_shared_key                                     = "vpnKey123"                     # Required. Site-to-Cloud Pre-Shared-Key. Must be manually configured on the Transit Gateways in Global Region
-    tunnel_supernet                                    = "169.254.0.0/28"                # Optional. Default 169.254.0.0/28. Used to create 4 x /30 subnets for the Site-to-Cloud Tunnel CIDRs
-    alicloud_china_eip_bandwidth_plan_name             = "china-eip-bw"                  # Optional. If specified, creates an EIP Bandwidth plan in AliCloud China region where the Transit Gateways were created and associates it with the EIP of the primary and HA Transit Gateways created in China Region
-    alicloud_global_eip_bandwidth_plan_name            = "global-eip-bw"                 # Optional. If specified, creates an EIP Bandwidth plan in AliCloud Global region of existing Transit Gateways
-    alicloud_china_eip_bandwidth_plan_bandwidth        = 500                             # Optional. Needed if alicloud_china_eip_bandwidth_plan_name is defined. Defaults to 500Mbps
-    alicloud_global_eip_bandwidth_plan_bandwidth       = 500                             # Optional. Needed if alicloud_global_eip_bandwidth_plan_name is defined. Defaults to 500Mbps
-    global_transit_gw_eip_id                           =                                 # Optional. Needed if you want to associate the EIP Bandwidth plan in AliCloud Global region with the EIP of Primary Transit Gateway in Global region
-    global_transit_hagw_eip_id                         =                                 # Optional. Needed if you want to associate the EIP Bandwidth plan in AliCloud Global region with the EIP address of HA Transit Gateway in Global region
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.52.0"
+  }
+    alicloud = {
+      source = "aliyun/alicloud"
+      version = "~> 1.203.0"
+      configuration_aliases = [alicloud.china, alicloud.global]
+    }
+    aviatrix = {
+      source = "AviatrixSystems/aviatrix"
+      version = "~> 2.24.3"
+      configuration_aliases = [aviatrix.china, aviatrix.global]
+    } 
+}
 }
 
-output "Remote_BGP_AS_Number" {
-  value = module.cen-test.alicloud_china_transit_bgp_asn
-}
-output "Remote_Gateway_IP" {
-  value = module.cen-test.avx_china_gw_private_ip
+provider aviatrix {
+  alias                   = "global"
+  // additional configuration
 }
 
-output "Local_Tunnel_IP" {  
-  value = module.cen-test.avx_global_transit_s2c_local_tunnel_cidr
+provider aviatrix {
+  alias                   = "china"
+  // additional configuration
 }
 
-output "Remote_Tunnel_IP" {
-  value = module.cen-test.avx_global_transit_s2c_remote_tunnel_cidr
+provider "alicloud" {
+  alias = "china"
+  region = "cn-beijing"
 }
 
-output "Remote_BGP_AS_Number_Backup" {  
-  value = module.cen-test.alicloud_china_transit_bgp_asn
+provider "alicloud" {
+  alias = "global"
+  region = "ap-southeast-1"
 }
 
-output "Remote_Gateway_IP_Backup" {
-  value = module.cen-test.avx_china_hagw_private_ip
+provider azurerm {
+    environment = "china"
+    features {}    
 }
 
-output "Local_Tunnel_IP_Backup" {
-  value = module.cen-test.avx_global_transit_s2c_backup_local_tunnel_cidr
-}
 
-output "Remote_Tunnel_IP_Backup" {
-  value = module.cen-test.avx_global_transit_s2c_backup_remote_tunnel_cidr
+module "interconnect_global_china" {
+  providers = {
+    aviatrix.global = aviatrix.global
+    aviatrix.china  = aviatrix.china
+    alicloud.global = alicloud.global
+    alicloud.china  = alicloud.china
+  }
+
+  source = "github.com/jocortems/aviatrix_alicloud_china_global_cen_interconnect"
+  china_controller_account_name                         = "ali-account"                             # Required. Name of the AliCloud account onboarded on China Aviatrix Controller
+  global_controller_account_name                        = "ali-account"                             # Required. Name of the AliCloud account onboarded on Global Aviatrix Controller
+  controller_nsg_name                                   = "controllerha-nsg"                        # Required. Name of the NSG associated with the Aviatrix Controller deployed in China Region
+  controller_nsg_resource_group_name                    = "china-controller"                        # Required. Name of the Resource Group associated with the NSG for the Aviatrix Controller deployed in China Region
+  controller_nsg_rule_priority                          = 1000                                      # Required. Priority of the NSG rule associated with the Aviatrix Controller deployed in China Region. This number must be unique, before assigning verify the NSG does not have a rule with the same priority. If deploying the Gateway in HA two rules will be created using consecutive priorities, the priority specified here will be for the first gateway
+  ha_enabled                                            = true/false                                # Optional. Default true
+  china_transit_vpc_name                                = "china-transit-vpc"                       # Required.
+  gw_china_region                                       = "acs-cn-beijing (Beijing)"                # Required. Name of the China Region to deploy the Aviatrix Transit Gateways to. Must match display name in Aviatrix Controller
+  china_gateway_name                                    = "china-transit-gw"                        # Optional. Name of the Transit Gateway in China. If not provided defaults to the value of china_transit_vpc_name
+  china_gateway_size                                    = "ecs.g5ne.large"                          # Optional. Default ecs.g5ne.large
+  china_vpc_cidr                                        = "10.200.0.0/23"                           # Required. Must be /23
+  china_gateway_bgp_asn                                 = 64901                                     # Required. Must be unique in the network
+  enable_segmentation_china                             = true/false                                # Optional. Default false        
+  global_transit_vpc_name                               = "global-transit-vpc"                      # Required
+  gw_global_region                                      = "acs-ap-southeast-1 (Singapore)"          # Required. Name of the Global Region to deploy the Aviatrix Transit Gateways to. Must match display name in Aviatrix Controller
+  global_gateway_name                                   = "global-transit-gw"                       # Optional. Name of the Transit Gateway in Global. If not provided defaults to the value of global_transit_vpc_name
+  global_gateway_size                                   = "ecs.g5ne.large"                          # Optional. Default ecs.g5ne.large
+  global_vpc_cidr                                       = "10.210.0.0/23"                           # Required. Must be /23
+  global_gateway_bgp_asn                                = 64902                                     # Required. Must be unique in the network
+  enable_segmentation_global                            = true/false                                # Optional. Default false        
+  ali_china_region                                      = "cn-beijing"                              # Required. Name of the AliCloud China region where the Gateways are deployed. Must match AliCloud Region ID
+  ali_global_region                                     = "ap-southeast-1"                          # Required. Name of the AliCloud Global region where the Gateways are deployed. Must match AliCloud Region ID
+  cen_name                                              = "my-cen"                                  # Required. CEN instance name
+  cen_global_geo                                        = "Asia-Pacific"                            # Required. Name of the AliCloud Geo. Valid values are "Asia-Pacific", "North-America", "Europe" and "Australia"
+  pre_shared_key                                        = "s2cipseckey"                             # Required. Site-to-Cloud IPSec VPN key
+  cen_bandwidth_type                                    = "DataTransfer"                            # Optional. Default "DataTransfer". If using a Bandwidth plan with CEN change to "BandwidthPackage"
+  cen_bandwidth_package_name                            =                                           # Optional. Creates a new bandwidth package to use with CEN if provided. Conflicts with cen_bandwidth_package_id
+  cen_bandwidth_package_id                              =                                           # Optional. Specifies an existing bandwidth package to use with CEN. Conflicts with cen_bandwidth_package_name
+  cen_bandwidth_package_bandwdith                       = 100                                       # Optional. Default 100Mbps. Only needed if cen_bandwidth_package_name is specified
+  cen_bandwidth_package_period                          = 1                                         # Optional. Default 1 month. Only needed if cen_bandwidth_package_name is specified  
+  cen_bandwidth_limit                                   = 100                                       # Optional. Default 100Mbps. Needed if either cen_bandwidth_package_name or cen_bandwidth_package_id are specified. Must be less than or equal to cen_bandwidth_package_bandwdith if creating a bandwidth package, or less than the existing bandwidth package bandwidth if using an existing one  
+  cen_transit_router_peer_attachment_bandwidth_limit    = 100                                       # Optional. Defaults to 100Mbps. This value is used regardless of whether a bandwidth package is used or not 
+  bgp_manual_spoke_advertise_cidrs_china                =                                           # Optional. Default Null. List of CIDRs to be advertised to on-premises via BGP. For example "10.2.0.0/16,10.4.0.0/16"
+  bgp_manual_spoke_advertise_cidrs_global               =                                           # Optional. Default Null. List of CIDRs to be advertised to on-premises via BGP. For example "10.2.0.0/16,10.4.0.0/16" 
+  bgp_polling_time_china                                = 20                                        # Optional. Default 20 seconds. BGP polling time in seconds between gateway and controller
+  bgp_polling_time_global                               = 20                                        # Optional. Default 20 seconds. BGP polling time in seconds between gateway and controller
+  bgp_hold_time_china                                   = 20                                        # Optional. Default 20 seconds
+  bgp_hold_time_global                                  = 20                                        # Optional. Default 20 seconds
+  prepend_as_path_china                                 = []                                        # Optional. Default empty list
+  prepend_as_path_global                                = []                                        # Optional. Default empty list
+  bgp_ecmp_china                                        = true/false                                # Optional. Default true
+  bgp_ecmp_global                                       = true/false                                # Optional. Default true
+  enable_preserve_as_path_china                         = true/false                                # Optional. Default false
+  enable_preserve_as_path_global                        = true/false                                # Optional. Default false
+  customized_spoke_vpc_routes_china                     =                                           # Optional. Default null
+  customized_spoke_vpc_routes_global                    =                                           # Optional. Default null
+  excluded_advertised_spoke_routes_china                =                                           # Optional. Default null
+  excluded_advertised_spoke_routes_global               =                                           # Optional. Default null
+  enable_learned_cidrs_approval_china                   = true/false                                # Optional. Default false
+  enable_learned_cidrs_approval_global                  = true/false                                # Optional. Default false
+  learned_cidrs_approval_mode_china                     = "gateway"                                 # Optional. Default "gateway"
+  learned_cidrs_approval_mode_global                    = "gateway"                                 # Optional. Default "gateway"
+  approved_learned_cidrs_china                          = []                                        # Optional. Default empty list
+  approved_learned_cidrs_global                         = []                                        # Optional. Default empty list
+  enable_vpc_dns_server_china                           = true/false                                # Optional. Default false
+  enable_vpc_dns_server_global                          = true/false                                # Optional. Default false
+  china_gw_tags                                         = {}                                        # Optional. Default empty
+  global_gw_tags                                        = {}                                        # Optional. Default empty
+  tunnel_detection_time_china                           = 20                                        # Optional. Default 20 seconds
+  tunnel_detection_time_global                          = 20                                        # Optional. Default 20 seconds  
 }
 ```
 
@@ -174,8 +217,6 @@ output "Remote_Tunnel_IP_Backup" {
 terraform init
 terraform apply --var-file=<terraform.tfvars>
 ````
-
-> **Note:** Configure Site-to-Cloud in the existing Aviatrix Transit Gateway in AliCloud Global region using the values of the outputs above for the tunnel CIDR configuration after the Terraform configuration is successfully aplied.
 
 ## **Disclaimer**:
 

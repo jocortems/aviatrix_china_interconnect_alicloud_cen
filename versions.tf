@@ -7,20 +7,12 @@ terraform {
     alicloud = {
       source = "aliyun/alicloud"
       version = "~> 1.203.0"
+      configuration_aliases = [alicloud.china, alicloud.global]
     }
     aviatrix = {
       source = "AviatrixSystems/aviatrix"
-      version = "~> 2.24.3"
+      version = ">= 2.22.0"
+      configuration_aliases = [aviatrix.china, aviatrix.global]
     } 
 }
-}
-
-provider "alicloud" {
-  alias = "global"
-  region = var.alicloud_region_global
-}
-
-provider "alicloud" {
-  alias = "china"
-  region = var.alicloud_region_china
 }
