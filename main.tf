@@ -105,7 +105,7 @@ module "cen" {
       alicloud.china = alicloud.china
       alicloud.global = alicloud.global
     }
-    source = "github.com/jocortems/alicloud_cen_deployment"
+    source = "github.com/jocortems/alicloud_cen_deploy"
     ali_china_region                                    = var.ali_china_region
     ali_global_region                                   = var.ali_global_region
     china_vpc_cidr                                      = var.china_vpc_cidr
