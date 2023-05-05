@@ -12,7 +12,7 @@ terraform {
     aviatrix = {
       source = "AviatrixSystems/aviatrix"
       version = ">= 2.22.0"
-      configuration_aliases = [aviatrix.china, aviatrix.global]
+      configuration_aliases = [aviatrix.global]
     } 
 }
 }

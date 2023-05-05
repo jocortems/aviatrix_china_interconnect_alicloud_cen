@@ -114,12 +114,11 @@ terraform {
 }
 
 provider aviatrix {
-  alias                   = "global"
-  // additional configuration
+  // This is the default provider, which needs to be the Controller in China Region
 }
 
 provider aviatrix {
-  alias                   = "china"
+  alias                   = "global"
   // additional configuration
 }
 
@@ -142,7 +141,6 @@ provider azurerm {
 module "interconnect_global_china" {
   providers = {
     aviatrix.global = aviatrix.global
-    aviatrix.china  = aviatrix.china
     alicloud.global = alicloud.global
     alicloud.china  = alicloud.china
   }

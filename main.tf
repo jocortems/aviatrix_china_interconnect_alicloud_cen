@@ -2,7 +2,6 @@
 # 1a. Create VPC in China Region
 
 resource "aviatrix_vpc" "china_vpc" {
-  provider             = aviatrix.china
   cloud_type           = 8192
   account_name         = var.china_controller_account_name
   region               = var.gw_china_region
@@ -26,7 +25,6 @@ module "controller-nsg" {
 }
 
 resource "aviatrix_transit_gateway" "china" {
-  provider                          = aviatrix.china
   cloud_type                        = 8192
   account_name                      = var.china_controller_account_name
   gw_name                           = var.china_gateway_name == null ? var.china_transit_vpc_name : var.china_gateway_name
@@ -124,7 +122,6 @@ module "cen" {
 }
 
 resource "aviatrix_transit_external_device_conn" "china_to_global" {
-  provider          = aviatrix.china
   vpc_id            = aviatrix_vpc.china_vpc.vpc_id
   connection_name   = "${var.ali_china_region}-to-${var.ali_global_region}"
   gw_name           = aviatrix_transit_gateway.china.gw_name
