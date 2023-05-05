@@ -37,3 +37,11 @@ output "cen_china_transit_router_route_table" {
 output "cen_global_transit_router_route_table" {
     value = module.cen.cen_global_transit_router_route_table
 }
+
+output "gateway_address" {
+  value = module.controller-nsg.gateway_address
+}
+
+output "gatewayha_address" {
+  value = module.controller-nsg.gatewayha_address
+}
