@@ -176,10 +176,10 @@ resource "aviatrix_transit_external_device_conn" "global_to_china" {
   backup_remote_gateway_ip = var.ha_enabled ? aviatrix_transit_gateway.china.ha_private_ip : null
   backup_bgp_remote_as_num = var.ha_enabled ? aviatrix_transit_gateway.china.local_as_number : null
 
-  local_tunnel_cidr         = var.ha_enabled ? "${cidrhost(local.tunnel_cidr_blocks[0], 2)}/30,${cidrhost(local.tunnel_cidr_blocks[3], 2)}/30" : "${cidrhost(local.tunnel_cidr_blocks[0], 2)}/30"
-  remote_tunnel_cidr        = var.ha_enabled ? "${cidrhost(local.tunnel_cidr_blocks[0], 1)}/30,${cidrhost(local.tunnel_cidr_blocks[3], 1)}/30" : "${cidrhost(local.tunnel_cidr_blocks[0], 1)}/30"
-  backup_local_tunnel_cidr  = var.ha_enabled ? "${cidrhost(local.tunnel_cidr_blocks[2], 2)}/30,${cidrhost(local.tunnel_cidr_blocks[1], 2)}/30" : null
-  backup_remote_tunnel_cidr = var.ha_enabled ? "${cidrhost(local.tunnel_cidr_blocks[2], 1)}/30,${cidrhost(local.tunnel_cidr_blocks[1], 1)}/30" : null
+  local_tunnel_cidr         = var.ha_enabled ? "${cidrhost(local.tunnel_cidr_blocks[0], 2)}/30,${cidrhost(local.tunnel_cidr_blocks[2], 2)}/30" : "${cidrhost(local.tunnel_cidr_blocks[0], 2)}/30"
+  remote_tunnel_cidr        = var.ha_enabled ? "${cidrhost(local.tunnel_cidr_blocks[0], 1)}/30,${cidrhost(local.tunnel_cidr_blocks[2], 1)}/30" : "${cidrhost(local.tunnel_cidr_blocks[0], 1)}/30"
+  backup_local_tunnel_cidr  = var.ha_enabled ? "${cidrhost(local.tunnel_cidr_blocks[1], 2)}/30,${cidrhost(local.tunnel_cidr_blocks[3], 2)}/30" : null
+  backup_remote_tunnel_cidr = var.ha_enabled ? "${cidrhost(local.tunnel_cidr_blocks[1], 1)}/30,${cidrhost(local.tunnel_cidr_blocks[3], 1)}/30" : null
 
   enable_ikev2           = true
   custom_algorithms      = true
