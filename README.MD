@@ -146,11 +146,12 @@ module "interconnect_global_china" {
   }
 
   source = "github.com/jocortems/aviatrix_alicloud_china_global_cen_interconnect"
+  controller_cloud                                      = "Azure/AWS"                               # Required. What cloud is the controller deployed
   china_controller_account_name                         = "ali-account"                             # Required. Name of the AliCloud account onboarded on China Aviatrix Controller
   global_controller_account_name                        = "ali-account"                             # Required. Name of the AliCloud account onboarded on Global Aviatrix Controller
-  controller_nsg_name                                   = "controllerha-nsg"                        # Required. Name of the NSG associated with the Aviatrix Controller deployed in China Region
-  controller_nsg_resource_group_name                    = "china-controller"                        # Required. Name of the Resource Group associated with the NSG for the Aviatrix Controller deployed in China Region
-  controller_nsg_rule_priority                          = 1000                                      # Required. Priority of the NSG rule associated with the Aviatrix Controller deployed in China Region. This number must be unique, before assigning verify the NSG does not have a rule with the same priority. If deploying the Gateway in HA two rules will be created using consecutive priorities, the priority specified here will be for the first gateway
+  controller_nsg_name                                   = "controllerha-nsg"                        # Optional. Required if controller is deployed in Azure. Name of the NSG associated with the Aviatrix Controller deployed in China Region
+  controller_nsg_resource_group_name                    = "china-controller"                        # Optional. Required if controller is deployed in Azure. Name of the Resource Group associated with the NSG for the Aviatrix Controller deployed in China Region
+  controller_nsg_rule_priority                          = 1000                                      # Optional. Required if controller is deployed in Azure. Priority of the NSG rule associated with the Aviatrix Controller deployed in China Region. This number must be unique, before assigning verify the NSG does not have a rule with the same priority. If deploying the Gateway in HA two rules will be created using consecutive priorities, the priority specified here will be for the first gateway
   ha_enabled                                            = true/false                                # Optional. Default true
   china_transit_vpc_name                                = "china-transit-vpc"                       # Required.
   gw_china_region                                       = "acs-cn-beijing (Beijing)"                # Required. Name of the China Region to deploy the Aviatrix Transit Gateways to. Must match display name in Aviatrix Controller
@@ -205,7 +206,8 @@ module "interconnect_global_china" {
   china_gw_tags                                         = {}                                        # Optional. Default empty
   global_gw_tags                                        = {}                                        # Optional. Default empty
   tunnel_detection_time_china                           = 20                                        # Optional. Default 20 seconds
-  tunnel_detection_time_global                          = 20                                        # Optional. Default 20 seconds  
+  tunnel_detection_time_global                          = 20                                        # Optional. Default 20 seconds
+  tunnel_supernet                                       = "169.254.0.0/28"                          # Optional. APIPA CIDR range used for Aviatrix S2C tunnel endpoints between China and Global 
 }
 ```
 

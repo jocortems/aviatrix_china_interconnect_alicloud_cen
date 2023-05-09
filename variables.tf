@@ -1,16 +1,30 @@
+variable "controller_cloud" {
+  type = string
+  description = "The CSP where Aviatrix Controller is deployed. Valid values are AWS or Azure"
+
+  validation {
+    condition     = can(regex("^(?i)(aws|azure)$", var.controller_cloud))
+    error_message = "The 'controller_cloud' variable must be either 'aws' or 'azure' (case insensitive)."
+  }
+}
+
+
 variable "controller_nsg_name" {
   type = string
   description = "Name of the NSG associated with the Aviatrix Controller deployed in China Region"
+  default = null
 }
   
 variable "controller_nsg_resource_group_name" {
   type = string
   description = "Name of the Resource Group associated with the NSG for the Aviatrix Controller deployed in China Region"
+  default = null
 }
 
 variable "controller_nsg_rule_priority" {
   type = number 
   description = "Priority of the NSG rule associated with the Aviatrix Controller deployed in China Region. This number must be unique, before assigning verify the NSG does not have a rule with the same priority. If deploying the Gateway in HA two rules will be created using consecutive priorities, the priority specified here will be for the first gateway"
+  default = null
 }
 
 variable "ha_enabled" {

@@ -13,6 +13,7 @@ resource "aviatrix_vpc" "china_vpc" {
 # 1b. Create the gateways
 
 module "controller-nsg" {
+  count     = lower(var.controller_cloud) == "azure" ? 1 : 0
   providers = {
     alicloud.china = alicloud.china
   }  
