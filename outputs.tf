@@ -39,9 +39,9 @@ output "cen_global_transit_router_route_table" {
 }
 
 output "gateway_address" {
-  value = module.controller-nsg.gateway_address
+  value = module.controller-nsg.gateway_address[0]
 }
 
 output "gatewayha_address" {
-  value = module.controller-nsg.gatewayha_address
+  value = module.controller-nsg.gatewayha_address[0]
 }
