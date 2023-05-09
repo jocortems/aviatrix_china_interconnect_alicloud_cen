@@ -109,6 +109,10 @@ module "cen" {
     ali_global_region                                   = var.ali_global_region
     china_vpc_cidr                                      = var.china_vpc_cidr
     global_vpc_cidr                                     = var.global_vpc_cidr
+    global_vswitch_cidr_master_cen_tr                   = cidrsubnet(var.global_vpc_cidr, 5, 4)
+    global_vswitch_cidr_slave_cen_tr                    = cidrsubnet(var.global_vpc_cidr, 5, 5)
+    china_vswitch_cidr_master_cen_tr                    = cidrsubnet(var.china_vpc_cidr, 5, 4)
+    china_vswitch_cidr_slave_cen_tr                     = cidrsubnet(var.china_vpc_cidr, 5, 5)
     china_vpc_id                                        = aviatrix_vpc.china_vpc.vpc_id
     global_vpc_id                                       = aviatrix_vpc.global_vpc.vpc_id
     cen_name                                            = var.cen_name

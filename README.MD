@@ -8,7 +8,7 @@ This Terraform module deploys and interconnects two Aviatrix Transit VPCs in Ali
 
 This Terraform module:
 
-- Is limited to Controllers deployed in Azure China running version 6.7 - 6.9
+- Is limited to Controllers deployed in Azure or AWS China running version 6.7 - 6.9
 - Creates one Transit VPC and Aviatrix Transit Gateways in a region in AliCloud China
 - Creates one Transit VPC and Aviatrix Transit Gateways in a region in AliCloud Global
 - Creates an AliCloud CEN instance and transit routers in the China and Global regions that will be interconnected and attached the created Transit VPCs
