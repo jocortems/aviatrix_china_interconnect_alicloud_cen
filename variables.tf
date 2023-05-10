@@ -114,11 +114,13 @@ variable "pre_shared_key" {
 variable "ali_china_region" {
     type = string
     description = "Alibaba China Cloud Region Name"
+    default = null
 }
 
 variable "ali_global_region" {
     type = string
     description = "Alibaba Global Cloud Region Name"
+    default = null
 }
 
 variable "china_vpc_cidr" {
@@ -349,6 +351,12 @@ variable "cen_name" {
   type = string
   description = "Name assigned to the AliCloud CEN instance"  
   default = null
+}
+
+variable "cen_instance_id" {
+  type = string
+  description = "If using an existing CEN, specify CEN Instance ID. If not provided, a new CEN will be created"
+  default = null  
 }
 
 variable "cen_bandwidth_package_name" {

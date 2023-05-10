@@ -116,6 +116,7 @@ module "cen" {
     china_vpc_id                                        = aviatrix_vpc.china_vpc.vpc_id
     global_vpc_id                                       = aviatrix_vpc.global_vpc.vpc_id
     cen_name                                            = var.cen_name
+    cen_instance_id                                     = var.cen_instance_id
     cen_global_geo                                      = var.cen_global_geo    
     cen_bandwidth_type                                  = var.cen_bandwidth_type
     cen_bandwidth_package_name                          = var.cen_bandwidth_package_name
