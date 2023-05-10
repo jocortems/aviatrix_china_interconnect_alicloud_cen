@@ -39,9 +39,9 @@ output "cen_global_transit_router_route_table" {
 }
 
 output "gateway_address" {
-  value = var.cen_instance_id == null ? null : module.controller-nsg[0].gateway_address
+  value = var.cen_instance_id != null ? null : module.controller-nsg[0].gateway_address
 }
 
 output "gatewayha_address" {
-  value = var.cen_instance_id == null ? null : module.controller-nsg[0].gatewayha_address
+  value = var.cen_instance_id != null ? null : module.controller-nsg[0].gatewayha_address
 }

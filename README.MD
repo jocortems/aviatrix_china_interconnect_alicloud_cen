@@ -167,8 +167,8 @@ module "interconnect_global_china" {
   global_vpc_cidr                                       = "10.210.0.0/23"                           # Required. Must be between /23 and /20
   global_gateway_bgp_asn                                = 64902                                     # Required. Must be unique in the network
   enable_segmentation_global                            = true/false                                # Optional. Default false        
-  ali_china_region                                      = "cn-beijing"                              # Optional. Required if creating new CEN instance (cen_name is provided). Region ID where the existing VPC in China is deployed 
-  ali_global_region                                     = "ap-southeast-1"                          # Optional. Required if creating new CEN instance (cen_name is provided). Region ID where the existing VPC in Global is deployed 
+  ali_china_region                                      = "cn-beijing"                              # Required. Region ID where the existing VPC in China is deployed 
+  ali_global_region                                     = "ap-southeast-1"                          # Required. Region ID where the existing VPC in Global is deployed 
   cen_name                                              = "my-cen"                                  # Optional. Specify if need to create new CEN. One of cen_instance_id or cen_name is required
   cen_instance_id                                       = "cen-idxyz"                               # Optional. Specify if using existing CEN. Conflicts with cen_name
   cen_global_geo                                        = "Asia-Pacific"                            # Optional. Required if creating new CEN instance (cen_name is provided). Valid values are "Asia-Pacific", "North-America", "Europe" and "Australia"

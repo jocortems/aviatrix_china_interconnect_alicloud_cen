@@ -114,13 +114,11 @@ variable "pre_shared_key" {
 variable "ali_china_region" {
     type = string
     description = "Alibaba China Cloud Region Name"
-    default = null
 }
 
 variable "ali_global_region" {
     type = string
     description = "Alibaba Global Cloud Region Name"
-    default = null
 }
 
 variable "china_vpc_cidr" {
