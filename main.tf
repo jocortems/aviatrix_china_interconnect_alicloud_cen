@@ -129,7 +129,7 @@ module "cen" {
 
 resource "aviatrix_transit_external_device_conn" "china_to_global" {
   vpc_id            = aviatrix_vpc.china_vpc.vpc_id
-  connection_name   = "${var.ali_china_region}-to-${var.ali_global_region}"
+  connection_name   = "${var.china_transit_vpc_name}-to-${var.global_transit_vpc_name}"
   gw_name           = aviatrix_transit_gateway.china.gw_name
   connection_type   = "bgp"
   tunnel_protocol   = "IPSec"
@@ -163,7 +163,7 @@ resource "aviatrix_transit_external_device_conn" "china_to_global" {
 resource "aviatrix_transit_external_device_conn" "global_to_china" {
   provider          = aviatrix.global
   vpc_id            = aviatrix_vpc.global_vpc.vpc_id
-  connection_name   = "${var.ali_global_region}-to-${var.ali_china_region}"
+  connection_name   = "${var.global_transit_vpc_name}-to-${var.china_transit_vpc_name}"
   gw_name           = aviatrix_transit_gateway.global.gw_name
   connection_type   = "bgp"
   tunnel_protocol   = "IPSec"
