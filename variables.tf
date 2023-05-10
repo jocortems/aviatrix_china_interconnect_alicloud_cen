@@ -348,6 +348,7 @@ variable "global_gw_tags" {
 variable "cen_name" {
   type = string
   description = "Name assigned to the AliCloud CEN instance"  
+  default = null
 }
 
 variable "cen_bandwidth_package_name" {
