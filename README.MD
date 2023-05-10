@@ -169,12 +169,12 @@ module "interconnect_global_china" {
   enable_segmentation_global                            = true/false                                # Optional. Default false        
   ali_china_region                                      = "cn-beijing"                              # Required. Name of the AliCloud China region where the Gateways are deployed. Must match AliCloud Region ID
   ali_global_region                                     = "ap-southeast-1"                          # Required. Name of the AliCloud Global region where the Gateways are deployed. Must match AliCloud Region ID
-  cen_name                                              = "my-cen"                                  # Required. CEN instance name
+  cen_name                                              = "my-cen"                                  # Optional. Specify if need to create new CEN. One of cen_instance_id or cen_name is required
   cen_global_geo                                        = "Asia-Pacific"                            # Required. Name of the AliCloud Geo. Valid values are "Asia-Pacific", "North-America", "Europe" and "Australia"
   pre_shared_key                                        = "s2cipseckey"                             # Required. Site-to-Cloud IPSec VPN key
   cen_bandwidth_type                                    = "DataTransfer"                            # Optional. Default "DataTransfer". If using a Bandwidth plan with CEN change to "BandwidthPackage"
-  cen_bandwidth_package_name                            =                                           # Optional. Creates a new bandwidth package to use with CEN if provided. Conflicts with cen_bandwidth_package_id
-  cen_bandwidth_package_id                              =                                           # Optional. Specifies an existing bandwidth package to use with CEN. Conflicts with cen_bandwidth_package_name
+  cen_bandwidth_package_name                            = var.cen_bandwidth_package_name            # Optional. If specified creates a bandwidth package for the CEN. Conflicts with cen_bandwidth_package_id. Leave blank if using existing CEN
+  cen_bandwidth_package_id                              = var.cen_bandwidth_package_id              # Optional. Specifies an existing bandwidth package to use with CEN. Conflicts with cen_bandwidth_package_name. Leave blank if using existing CEN
   cen_bandwidth_package_bandwdith                       = 100                                       # Optional. Default 100Mbps. Only needed if cen_bandwidth_package_name is specified
   cen_bandwidth_package_period                          = 1                                         # Optional. Default 1 month. Only needed if cen_bandwidth_package_name is specified  
   cen_bandwidth_limit                                   = 100                                       # Optional. Default 100Mbps. Needed if either cen_bandwidth_package_name or cen_bandwidth_package_id are specified. Must be less than or equal to cen_bandwidth_package_bandwdith if creating a bandwidth package, or less than the existing bandwidth package bandwidth if using an existing one  
