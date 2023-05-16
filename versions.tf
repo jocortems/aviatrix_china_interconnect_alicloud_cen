@@ -6,7 +6,7 @@ terraform {
   }
     alicloud = {
       source = "aliyun/alicloud"
-      version = "~> 1.203.0"
+      version = "~> 1.204.0"
       configuration_aliases = [alicloud.china, alicloud.global]
     }
     aviatrix = {
