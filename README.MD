@@ -92,6 +92,8 @@ Set environment variables ALICLOUD_ACCESS_KEY and ALICLOUD_SECRET_KEY:
 
 ### 3. Applying Terraform configuration
 
+> **IMPORTANT:** If flag ha_enabled was set to false during intial deployment and HA is required afterwads, terraform destroy must be run first, change the flag to true and redeploy, otherwise the HAGW won't complete provisioning before the controllers times out and rollsback the HAGW deployment, this is because Aviatrix doesn't support pre-assigning EIPs to Gateways deployed in AliCloud and this module uses a sleep timer resource to obtain the value of the IP addresses to add to the Azure Controller NSG
+
 ```hcl
 
 terraform {
@@ -218,7 +220,3 @@ module "interconnect_global_china" {
 terraform init
 terraform apply --var-file=<terraform.tfvars>
 ````
-
-## **Disclaimer**:
-
-The material embodied in this software/code is provided to you "as-is" and without warranty of any kind, express, implied or otherwise, including without limitation, any warranty of fitness for a particular purpose. In no event shall the Aviatrix Inc. be liable to you or anyone else for any direct, special, incidental, indirect or consequential damages of any kind, or any damages whatsoever, including without limitation, loss of profit, loss of use, savings or revenue, or the claims of third parties, whether or not Aviatrix Inc. has been advised of the possibility of such loss, however caused and on any theory of liability, arising out of or in connection with the possession, use or performance of this software/code.
